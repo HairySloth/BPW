@@ -10,36 +10,42 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 12f;
     public float gravity = -9.81f;
     public float jumpHeight = 3f;
+    public float jumpPadJumpHeight = 10f;
 
     public Transform groundCheck;
     public float groundDistance = 0.4f;
 
     public bool IsCrouching = false;
-    public float CrouchHeight = 1.6f;
+    public float CrouchHeight = 1f;
     public float Standingheight = 1.83f;
+    public float maxInitialFallSpeed = -4f;
 
     Vector3 velocity;
     public bool isGrounded;
+    public bool isOnJumpPad;
 
     // Update is called once per frame
     void Update()
     {
         var groundMask = LayerMask.GetMask("Ground", "PickUp");
-
+        var jumpPadMask = LayerMask.GetMask("JumpPad");
+        
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-
-
-        if(isGrounded && velocity.y < -3f)
-        {
-            velocity.y = -4f;
-        }
-
-
+        isOnJumpPad = Physics.CheckSphere(groundCheck.position, groundDistance, jumpPadMask);
 
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
         Vector3 move = transform.right * x + transform.forward * z;
+
+        if(velocity.y < maxInitialFallSpeed && isGrounded)
+        {
+            velocity.y = maxInitialFallSpeed;
+        }
+        if(velocity.y < maxInitialFallSpeed && isOnJumpPad)
+        {
+            velocity.y = maxInitialFallSpeed;
+        }
 
         controller.Move(move * speed * Time.deltaTime);
 
@@ -66,8 +72,13 @@ public class PlayerMovement : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
 
+        if(Input.GetButtonDown("Jump")&& isOnJumpPad)
+        {
+            velocity.y = Mathf.Sqrt(jumpPadJumpHeight * -2f * gravity);
+        }
+
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
-
+        print(velocity);    
     }
 }
