@@ -37,78 +37,8 @@ public class PlayerMovement : MonoBehaviour
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
         isOnJumpPad = Physics.CheckSphere(groundCheck.position, groundDistance, jumpPadMask);
 
-        //float x = Input.GetAxis("Horizontal");
-        //float z = Input.GetAxis("Vertical");
-
-        if(Input.GetKey(KeyCode.W))
-        {
-            z += acceleration * Time.deltaTime;
-            if(z > 1f)
-            {
-                z = 1;
-            }
-
-        }
-        if((Input.GetKey(KeyCode.W))== false)
-        {
-            z -= acceleration * Time.deltaTime;
-            if (z < 0f)
-            {
-                z = 0f;
-            }
-        }
-        if(Input.GetKey(KeyCode.D))
-        {
-            x += acceleration * Time.deltaTime;
-            if (x > 1f)
-            {
-                x = 1;
-            }
-
-        }
-        if((Input.GetKey(KeyCode.D))== false)
-        {
-            x -= acceleration * Time.deltaTime;
-            if (x < 0f)
-            {
-                x = 0f;
-            }
-        }
-        if(Input.GetKey(KeyCode.S))
-        {
-            z -= acceleration * Time.deltaTime;
-            if (z < -1f)
-            {
-                z = -1;
-            }
-
-        }
-        if((Input.GetKey(KeyCode.S)) == false)
-        {
-            z += acceleration * Time.deltaTime;
-            if (z > 0f)
-            {
-                z = 0f;
-            }
-        }
-        if(Input.GetKey(KeyCode.A))
-        {
-            x -= acceleration * Time.deltaTime;
-            if (x < -1f)
-            {
-                x = -1;
-            }
-
-        }
-        if(!(Input.GetKey(KeyCode.A)))
-        {
-            x += acceleration * Time.deltaTime;
-            if (x > 0f)
-            {
-                x = 0f;
-            }
-        }
-
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
 
 
 
@@ -125,7 +55,6 @@ public class PlayerMovement : MonoBehaviour
 
         
         controller.Move(move * speed * Time.deltaTime);
-        print(z);
 
         if(Input.GetKey(KeyCode.LeftControl))
         {
