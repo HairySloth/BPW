@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class PickUp : MonoBehaviour
 {
-    private GameObject heldObj;
+    public GameObject heldObj;
     public float pickUpRange = 5;
     public float pickUpRangeLarge = 50;
     public Transform holdParent;
     public float moveForce = 150;
-    public bool superPickUp = false;
-
+    public bool superPickUp = true;
+    public int minScale = -2;
+    public int maxScale = 6;
+    public float scaleSpeed = 0.1f;
+    private bool gracePeriod = true;
 
     // Update is called once per frame
 
@@ -18,6 +21,7 @@ public class PickUp : MonoBehaviour
 
     void Update()
     {
+        superPickUp = true;
         if (Input.GetKeyDown(KeyCode.E))
         {
             if (heldObj == null)
@@ -49,6 +53,7 @@ public class PickUp : MonoBehaviour
                     {
                         PickUpObject(hit.transform.gameObject);
                     }
+                    
                 }
                 else
                 {
@@ -57,25 +62,26 @@ public class PickUp : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            if (superPickUp == false)
-            {
-                superPickUp = true; 
-            }
-            else
-            {
-                superPickUp = false;
-            }
-        }
 
 
 
         if (heldObj != null)
         {
+
+
+            ScaleObject();
             MoveObject();
+            if (Vector3.Distance(heldObj.transform.position, holdParent.position) > 1f && gracePeriod == false)
+            {
+                DropObject();
+            }
+            //print(Vector3.Distance(heldObj.transform.position, holdParent.position));
         }
     
+
+
+
+
     }
 
     void MoveObject()
@@ -86,6 +92,30 @@ public class PickUp : MonoBehaviour
             heldObj.GetComponent<Rigidbody>().AddForce(moveDirection * moveForce);
             
         }
+        if(Vector3.Distance(heldObj.transform.position, holdParent.position) < 1f)
+        {
+            gracePeriod = false;
+        }
+    }
+
+    void ScaleObject()
+    {
+        //print(scale);
+        
+        if (Input.GetAxis("Mouse ScrollWheel") > 0f && heldObj.transform.localScale.y < 57f)
+        {
+            heldObj.transform.localScale = new Vector3((heldObj.transform.localScale.x * 1.1f), (heldObj.transform.localScale.y * 1.1f), (heldObj.transform.localScale.z * 1.1f));
+            heldObj.GetComponent<Rigidbody>().mass = heldObj.GetComponent<Rigidbody>().mass * 1.2f;
+
+        }
+        if (Input.GetAxis("Mouse ScrollWheel") < 0f && heldObj.transform.localScale.y > 16f)
+        {
+            heldObj.transform.localScale = new Vector3((heldObj.transform.localScale.x / 1.1f), (heldObj.transform.localScale.y / 1.1f), (heldObj.transform.localScale.z / 1.1f));
+            heldObj.GetComponent<Rigidbody>().mass = heldObj.GetComponent<Rigidbody>().mass / 1.2f;
+        }
+        //print(heldObj.GetComponent<Rigidbody>().mass);
+        //heldObj.transform.localScale = new Vector3 ((heldObj.transform.localScale.x * (Input.mouseScrollDelta.y+1)),(heldObj.transform.localScale.y *(Input.mouseScrollDelta.y+1)),(heldObj.transform.localScale.z * (Input.mouseScrollDelta.y+1)));
+
     }
 
     void PickUpObject(GameObject pickObj)
@@ -114,6 +144,7 @@ public class PickUp : MonoBehaviour
 
         heldObj.transform.parent = null;
         heldObj = null;
+        gracePeriod = true;
 
     }
 }

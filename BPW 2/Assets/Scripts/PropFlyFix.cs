@@ -23,7 +23,7 @@ public class PropFlyFix : MonoBehaviour
 
         if(isGrounded == true)
         {
-            gameObject.layer = 7;
+            gameObject.layer = 0;
         }
 
     }

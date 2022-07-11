@@ -9,6 +9,8 @@ public class ButtonScript : MonoBehaviour
     public float buttonDistance;
     public Animator slideDoor = null;
     public bool hasBeenOpened;
+    public string animation1 = "SliderDoorOpen";
+    public string animation2 = "SliderDoorClose";
     
 
 
@@ -25,13 +27,13 @@ public class ButtonScript : MonoBehaviour
         isPressed = Physics.CheckSphere(buttonCheck.position, buttonDistance, buttonMask);
         if (isPressed)
         {
-            slideDoor.Play("SliderDoorOpen");
+            slideDoor.Play(animation1);
             hasBeenOpened = true;
 
         }
         else if (isPressed == false && hasBeenOpened)
         {
-            slideDoor.Play("SliderDoorClose");
+            slideDoor.Play(animation2);
         }
 
 
